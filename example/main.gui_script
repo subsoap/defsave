@@ -4,8 +4,15 @@ local defsave = require("defsave.defsave")
 function init(self)
 	defsave.default_data = require("example.default_data")
 	defsave.load("config")
+	pprint(defsave.loaded)
 	defsave.autosave = true
 	defsave.changed = true
+	--defsave.appname = "defsave_example"
+	print(defsave.get("config", "missing_key"))
+	
+	print(defsave.get_file_path("config"))
+	
+	
 end
 
 function final(self)

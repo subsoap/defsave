@@ -2,23 +2,22 @@
 -- if you don't want any defaults for a file don't include them
 -- you don't have to set any defaults for all parts of a file
 -- very useful in configs for setting default audio levels for example
--- by convention, filenames lowercase and keys all uppercase
+-- nested tables are supported but you must manage the nested data
 
 return {
 
 
 
 config = {
-	audio_sfx = 0.5,
-	audio_music = 0.6,
+	audio = { sfx = 0.5, music = 0.6},
 	fullscreen = true,
 	custom_cursor = true
 },
 
 
 profiles = {
-	NUMBER_OF_PROFILES = 0,
-	CURRENT_PROFILE = nil
+	number_of_profiles = 0,
+	current_profile = nil
 }
 
 
