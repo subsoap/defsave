@@ -8,7 +8,10 @@ M.timer = 0
 M.changed = false -- locally used but can be useful to have exposed
 M.loaded = {} -- list of files currently loaded
 
+M.default_data = {} -- default data to set files to if any cannnot be loaded
+
 function M.load(file)
+	
 end
 
 function M.save(file)

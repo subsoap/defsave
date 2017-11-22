@@ -2,6 +2,7 @@ local defsave = require("defsave.defsave")
 
 
 function init(self)
+	defsave.default_data = require("example.default_data")
 	defsave.load("config")
 	defsave.autosave = true
 	defsave.changed = true
