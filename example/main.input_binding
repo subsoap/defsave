@@ -1,0 +1,20 @@
+key_trigger {
+  input: KEY_BACKSPACE
+  action: "backspace"
+}
+key_trigger {
+  input: KEY_Z
+  action: "key_z"
+}
+mouse_trigger {
+  input: MOUSE_BUTTON_1
+  action: "touch"
+}
+text_trigger {
+  input: TEXT
+  action: "text"
+}
+text_trigger {
+  input: MARKED_TEXT
+  action: "marked_text"
+}

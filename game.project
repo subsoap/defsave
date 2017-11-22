@@ -1,0 +1,16 @@
+[project]
+title = DefSave
+dependencies = https://github.com/britzl/gooey/archive/master.zip
+
+[library]
+include_dirs = defsave
+
+[input]
+game_binding = /example/main.input_bindingc
+
+[bootstrap]
+main_collection = /example/main.collectionc
+
+[script]
+shared_state = 1
+
