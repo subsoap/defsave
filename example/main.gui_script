@@ -2,17 +2,33 @@ local defsave = require("defsave.defsave")
 
 
 function init(self)
+	defsave.appname = "defsave_example"
 	defsave.default_data = require("example.default_data")
+	
+	defsave.verbose = false
+	
 	defsave.load("config")
-	pprint(defsave.loaded)
+	
+	--pprint(defsave.loaded)
+
 	defsave.autosave = true
-	defsave.changed = true
-	--defsave.appname = "defsave_example"
-	print(defsave.get("config", "missing_key"))
 	
-	print(defsave.get_file_path("config"))
+	--pprint(defsave.loaded)
+	
+	--print(defsave.get("config", "missing_key"))
+	
+	--print(defsave.get_file_path("config"))
+	
+	--print(defsave.load())
+	--print(defsave.get("config", "audio").music)
+	--pprint(defsave.get("config", "audio"))
+	
+	--defsave.set("config", "fullscreen", false)
 	
 	
+	
+	defsave.save("config")
+	defsave.save("config", true)
 end
 
 function final(self)

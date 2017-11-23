@@ -16,6 +16,12 @@ local defsave = require("defsave.defsave")
 
 Don't include an extension in your file names. Use "config" over "config.dat" for example.
 
+Don't name your filenames with a leading number or any character not allowed in Lua variable names. Use "profile_1" not "1" for example.
+
+By default, the contents of the saved files are not encrypted, but support for this is coming soon.
+
+Set verbose to true to also print any successful messages, otherwise only errors or warnings will be printed.
+
 ---
 
 If you need to backup or clear your save data you can find it in:

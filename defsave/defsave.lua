@@ -7,6 +7,7 @@ M.autosave_timer = 1 -- amount of seconds between autosaves if changes have been
 M.timer = 0 -- current timer value only increases if autosave is enabled
 M.changed = false -- locally used but can be useful to have exposed
 M.verbose = true -- if true then more information will be printed such as autosaves
+M.block_reloading = false -- if true then files already loaded will never be overwritten with a reload
 M.appname = "defsave" -- determines part of the path for saving files to
 M.loaded = {} -- list of files currently loaded
 M.sysinfo = sys.get_sys_info()
@@ -70,46 +71,109 @@ function M.load(file)
 	end
 	
 	if M.loaded[file] ~= nil then
-		print("DefSave: Warning the file " .. file .. " was already loaded and will be reloaded possibly overwriting changes")
+		if M.block_reloading == false then
+			print("DefSave: Warning the file " .. file .. " was already loaded and will be reloaded possibly overwriting changes")
+		else
+			print("DefSave: Warning attempt to reload already file has been blocked")
+			return true
+		end
 	end
 	
 	local loaded_file = sys.load(path)
 	
 	local empty = false
 	
+	
 	if next(loaded_file) == nil then
-		print("DefSave: Loaded file '" .. file .. "' is empty")
+		if M.verbose then print("DefSave: Loaded file '" .. file .. "' is empty") end
 		empty = true
 	end
 	
 	if M.use_default_data and empty then 
 		if M.default_data[file] ~= nil then
 			M.loaded[file] = {}
-			M.loaded[file].changed = false
+			M.loaded[file].changed = true
+			M.changed = true
 			M.loaded[file].data = clone(M.default_data[file])
-			print("DefSave: Successfully set the file '" .. file .. "' to its default state.")
+			if M.verbose then print("DefSave: Successfully set the file '" .. file .. "' to its default state") end
+			return true
+		else
+			print("DefSave: There is no default file set for " .. file .. " so setting it to empty")
+			M.loaded[file] = {}
+			M.loaded[file].changed = true
+			M.changed = true
+			M.loaded[file].data = {}
+			return true
 		end
+	elseif empty then
+		print("DefSave: The " .. file .. " is loaded but it was empty")
+		M.loaded[file] = {}
+		M.loaded[file].changed = true
+		M.changed = true
+		M.loaded[file].data = {}
+		return true		
 	end
 	
 
+	M.loaded[file] = {}
+	M.loaded[file].changed = false
+	M.loaded[file].data = loaded_file
+	
+	if M.verbose then  print("DefSave: The file '" .. file .. "' was successfully loaded") end
+	
+	return true
 	
 end
 
-function M.save(file)
+function M.save(file, force)
+	force = force or false
 
+	if M.loaded[file] == nil then
+		print("DefSave: Warning attempt to save a file which could not be found in loaded list")
+		return nil
+	end
 	
-end
-
-function M.get(file, key)
-	if M.loaded[file] ~= nil then
-		return M.loaded[file][key]
+	if M.loaded[file].changed == false and force == false then
+		if M.verbose then  print("DefSave: File is unchanged so not saving, set force flag to true to force saving if changed flag is false") end
+		return true
+	end
+	
+	local path = M.get_file_path(file)
+	
+	
+	if sys.save(path, M.loaded[file].data) then
+		if M.verbose then print("DefSave: File '" .. tostring(file) .. "' has been saved to the path '" .. path .. "'") end
+		M.loaded[file].changed = false
+		return true
 	else
-		print("DefSave: Warning the file '" .. tostring(file) .. "' could not be found in loaded list")
+		print("DefSave: Something went wrong when attempting to save the file '" .. tostring(file) .. "' to the path '" .. path .. "'")
 		return nil
 	end
 end
 
-function M.set(file, key)
+
+function M.save_all()
+end
+
+function M.get(file, key)
+	if M.loaded[file] ~= nil then
+		return M.loaded[file].data[key]
+	else
+		print("DefSave: Warning when attempting to get a key '" .. key .. "' the file '" .. tostring(file) .. "' could not be found in loaded list")
+		return nil
+	end
+end
+
+function M.set(file, key, value)
+	if M.loaded[file] ~= nil then
+		-- we could check here to see if values are the same or not to set the changed flags or not but would require deep table compare loop
+		M.loaded[file].data[key] = value
+		M.loaded[file].changed = true
+		M.changed = true
+	else
+		print("DefSave: Warning when attempting to set a key '" .. key .. "' the file '" .. tostring(file) .. "' could not be found in loaded list")
+		return nil		
+	end
 end
 
 function M.reset_to_default(file)
