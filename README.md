@@ -47,10 +47,22 @@ defsave.save("config")
 You can save all files at once. By default, it will only actually save files with changes, but you can force saving all files by setting the force flag to true.
 
 ```
-defsave.save_all() -- only saves changes files
+defsave.save_all() -- only saves changed files
 ```
 ```
 defsave.save_all(true) -- saves all files
+```
+
+In your update, if you want autosave to be enabled, you will need to include
+
+```
+defsave.update(dt)
+```
+
+To save all files on the ending of your game you need to include in final
+
+```
+defsave.save_all()
 ```
 
 You can setup template defaults for your files too. These are used if you set defsave.use_default_data to true which is true by default. While use_default_data is true defsave will check the defsave.default_data table to see if there is any default data there when a file is loaded which is empty. Check the example for an example of default_data.lua and how it can be set.
