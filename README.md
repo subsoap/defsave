@@ -12,6 +12,40 @@ Once added, you must require the main Lua module in scripts via
 local defsave = require("defsave.defsave")
 ```
 
+## Usage
+
+First set your game's appname
+
+```
+defsave.appname = "my_awesome_game"
+```
+
+Load a file
+
+```
+defsave.load("config")
+```
+
+Get a key from a loaded file
+
+```
+defsave.get("config", "audio")
+```
+
+Set a key to a loaded file
+
+```
+defsave.set("config", "fullscreen", false)
+```
+
+Save a file
+
+```
+defsave.save("config")
+```
+
+You can setup templat defaults for your files too. These are used if you set defsave.use_default_data to true which on true by default. While use_default_data is true defsave will check the defsave.default_data table to see if there is any default data there. Check the example for an example of default_data.lua and how it can be set.
+
 ## Information
 
 Don't include an extension in your file names. Use "config" over "config.dat" for example.
