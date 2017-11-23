@@ -5,9 +5,13 @@ function init(self)
 	defsave.appname = "defsave_example"
 	defsave.default_data = require("example.default_data")
 	
-	defsave.verbose = false
+	--defsave.verbose = false
 	
 	defsave.load("config")
+	defsave.load("test")
+	
+	print(defsave.is_loaded("config"))
+	print(defsave.is_loaded("configg"))
 	
 	--pprint(defsave.loaded)
 
@@ -27,8 +31,9 @@ function init(self)
 	
 	
 	
-	defsave.save("config")
-	defsave.save("config", true)
+	--defsave.save("config")
+	--defsave.save("config", true)
+	defsave.save_all(true)
 end
 
 function final(self)

@@ -3,7 +3,7 @@
 local M = {}
 
 M.autosave = false -- set to true to autosave all loaded files that are changed on a timer
-M.autosave_timer = 1 -- amount of seconds between autosaves if changes have been made
+M.autosave_timer = 10 -- amount of seconds between autosaves if changes have been made
 M.timer = 0 -- current timer value only increases if autosave is enabled
 M.changed = false -- locally used but can be useful to have exposed
 M.verbose = true -- if true then more information will be printed such as autosaves
@@ -90,21 +90,12 @@ function M.load(file)
 	end
 	
 	if M.use_default_data and empty then 
-		if M.default_data[file] ~= nil then
-			M.loaded[file] = {}
-			M.loaded[file].changed = true
-			M.changed = true
-			M.loaded[file].data = clone(M.default_data[file])
-			if M.verbose then print("DefSave: Successfully set the file '" .. file .. "' to its default state") end
+		if (M.reset_to_default(file)) then
 			return true
 		else
-			print("DefSave: There is no default file set for " .. file .. " so setting it to empty")
-			M.loaded[file] = {}
-			M.loaded[file].changed = true
-			M.changed = true
-			M.loaded[file].data = {}
-			return true
+			return false
 		end
+		
 	elseif empty then
 		print("DefSave: The " .. file .. " is loaded but it was empty")
 		M.loaded[file] = {}
@@ -152,7 +143,12 @@ function M.save(file, force)
 end
 
 
-function M.save_all()
+function M.save_all(force)
+	force = force or false
+	for key, value in pairs(M.loaded) do
+		M.save(key, force)
+		M.changed = false		
+	end
 end
 
 function M.get(file, key)
@@ -177,10 +173,23 @@ function M.set(file, key, value)
 end
 
 function M.reset_to_default(file)
+	if M.default_data[file] ~= nil then
+		M.loaded[file] = {}
+		M.loaded[file].changed = true
+		M.changed = true
+		M.loaded[file].data = clone(M.default_data[file])
+		if M.verbose then print("DefSave: Successfully set the file '" .. file .. "' to its default state") end
+		return true
+	else
+		print("DefSave: There is no default file set for '" .. file .. "' so setting it to empty")
+		M.loaded[file] = {}
+		M.loaded[file].changed = true
+		M.changed = true
+		M.loaded[file].data = {}
+		return true
+	end	
 end
 
-function M.reset_list_to_default(list)
-end
 
 function M.is_loaded(file)
 	if M.loaded[file] ~= nil then
@@ -190,12 +199,7 @@ function M.is_loaded(file)
 	end
 end
 
-function M.save_changed()
-	if M.changed == true then
-		M.changed = false
-		if M.verbose then print("DefSave: Autosaved") end
-	end
-end
+
 
 function M.update(dt)
 	if M.autosave == true then
@@ -206,7 +210,10 @@ function M.update(dt)
 		
 		
 		if M.timer >= M.autosave_timer then
-			M.save_changed()
+			if M.changed == true then
+				M.save_all()
+				if M.verbose then print("DefSave: Autosaved All Changed Files") end
+			end
 			M.timer = M.timer - M.autosave_timer
 		end
 	end
