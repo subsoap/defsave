@@ -125,7 +125,7 @@ function M.save(file, force)
 	end
 	
 	if M.loaded[file].changed == false and force == false then
-		if M.verbose then  print("DefSave: File is unchanged so not saving, set force flag to true to force saving if changed flag is false") end
+		if M.verbose then  print("DefSave: File '" .. file .. "' is unchanged so not saving, set force flag to true to force saving if changed flag is false") end
 		return true
 	end
 	

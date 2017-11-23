@@ -8,7 +8,9 @@ function init(self)
 	--defsave.verbose = false
 	
 	defsave.load("config")
-	defsave.load("test")
+	defsave.load("player")
+	
+	print(defsave.get("player", "score"))
 	
 	print(defsave.is_loaded("config"))
 	print(defsave.is_loaded("configg"))
@@ -37,11 +39,11 @@ function init(self)
 end
 
 function final(self)
-	-- Add finalization code here
-	-- Remove this function if not needed
+	defsave.save_all()
 end
 
 function update(self, dt)
+	defsave.set("player", "score", defsave.get("player", "score") + dt)
 	defsave.update(dt)
 end
 

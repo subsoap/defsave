@@ -18,6 +18,11 @@ config = {
 profiles = {
 	number_of_profiles = 0,
 	current_profile = nil
+},
+
+player = {
+	score = 0,
+
 }
 
 
