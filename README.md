@@ -61,21 +61,21 @@ Set verbose to true to also print any successful messages, otherwise only errors
 If you need to backup or clear your save data you can find it in:
 
 Windows
-* %appdata%\Roaming\appname\filename
+  %appdata%\Roaming\appname\filename
 
 OS X
-* ~/Library/Application Support/appname/filename
+  ~/Library/Application Support/appname/filename
 
 Linux (default path is slightly modified to be within .config user folder)
-* ~/.config/appname/filename
+  ~/.config/appname/filename
 
 iOS
-* /var/mobile/Containers/Data/Application/{app-uid?}/Library/Application Support/appname/filename
+  /var/mobile/Containers/Data/Application/{app-uid?}/Library/Application Support/appname/filename
 
 Android 
-* /data/data/com.packagename/files/filename
+  /data/data/com.packagename/files/filename
 
 HTML5
-* /data/.appname/filename
+  /data/.appname/filename
 
 The appname is based on the function for getting the path sys.get_save_file("appname", "filename") by default DefSave saves in the OS appropriate location and not next to the binary.
