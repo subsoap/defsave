@@ -1,5 +1,7 @@
 -- DefSave helps with loading and saving config and player data between sesssions
 
+local utf8 = require("defsave.utf8")
+
 local M = {}
 
 M.autosave = false -- set to true to autosave all loaded files that are changed on a timer
@@ -12,8 +14,38 @@ M.appname = "defsave" -- determines part of the path for saving files to
 M.loaded = {} -- list of files currently loaded
 M.sysinfo = sys.get_sys_info()
 M.use_default_data = true -- if true will attempt to load default data from the default_data table when loading empty file
+M.enable_encryption = false -- if true then all data saved and loaded will be encrypted with AES - SLOWER
+M.encryption_key = "defsave" -- pick an encryption key to use if you're using encryption
+M.enable_obfuscation= false -- if true then all data saved and loaded will be XOR obfuscated - FASTER
+M.obfuscation_key = "defsave" -- pick an obfuscation key it use if you're using encryption, the longer the key for obfuscation the better
+
+-- You don't have to save your keys directly in one file as a single string... you can get creative with how you store your keys
+-- Don't expect your save files to not be unlocked by someone eventually, don't store sensetive data in your files!
+-- This is only a deterent for casual users to not mess with save data files
+-- And your users can still use memory editing tools which you must defend against with other ways if you even wish to
 
 M.default_data = {} -- default data to set files to if any cannnot be loaded
+
+function M.obfuscate(input, key)
+	key = key or M.obfuscation_key
+	local output = ""
+	local key_iterator = 1
+	
+	local input_length = #input
+	local key_length = #key
+	
+	for i=1, input_length do
+		local character = string.byte(input:sub(i,i))
+		if key_iterator >= key_length then key_iterator = 1 end -- cycle
+		local key_byte = string.byte(key:sub(key_iterator,key_iterator))
+		output = output .. string.char(bit.bxor( character , key_byte))
+
+		key_iterator = key_iterator + 1
+		
+	end
+	return output
+end
+
 
 local function clone(t) -- deep-copy a table
     if type(t) ~= "table" then return t end

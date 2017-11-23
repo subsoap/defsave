@@ -31,7 +31,8 @@ function init(self)
 	
 	--defsave.set("config", "fullscreen", false)
 	
-	
+	local temp = defsave.obfuscate("Hello, this is a test of your broadcasting service. Please stand by.", defsave.obfuscation_key)
+	print(defsave.obfuscate(temp, defsave.obfuscation_key))
 	
 	--defsave.save("config")
 	--defsave.save("config", true)
