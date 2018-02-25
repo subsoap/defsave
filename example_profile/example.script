@@ -11,6 +11,9 @@ function init(self)
 	if not profile.profile_exists("pkeod") then
 		profile.create_profile("pkeod", nil, {score = 9999999})
 	end
+	if profile.is_profile_active("pkeod") == false then
+		profile.set_active_profile("pkeod")
+	end
 	pprint(profile.get_profiles())
 	pprint(profile.profiles)
 end

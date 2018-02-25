@@ -94,7 +94,7 @@ end
 function M.set_active_profile(profile)
 	if M.verbose == true then print("Profile: New active profile " .. tostring(profile)) end
 	set_active_profile_to_inactive()
-	M.profiles[pofile].__active = true
+	M.profiles[profile].__active = true
 end
 
 
@@ -121,11 +121,20 @@ function M.profile_exists(profile)
 	end
 end
 
+function M.is_profile_active(profile)
+	assert(M.profile_exists(profile), "Profile: is_profile_active - profile does not exist " .. tostring(profile))
+	if M.profiles[profile].__active == true then
+		return true
+	else
+		return false
+	end
+end
+
 -- creates a profile with optional template data used
 function M.create_profile(profile, template_data, extra_data)
 	if M.verbose == true then print("Profile: create_profile - " .. tostring(profile)) end
 	profile = profile or M.create_unique_profile_id()
-	assert(M.profiles[profile] == nil, "Profile: You cannot create duplicate profiles with the same ID")
+	assert(M.profile_exists(profile) == false, "Profile: You cannot create duplicate profiles with the same ID")
 	M.profiles[profile] = {}
 	M.profiles[profile].id = profile
 	M.update_profile(profile, M.template_data[template_data])
