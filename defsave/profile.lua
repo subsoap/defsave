@@ -113,6 +113,14 @@ function M.create_unique_profile_id()
 	return "profile-" .. uuid
 end
 
+function M.profile_exists(profile)
+	if M.profiles[profile] == nil then
+		return false
+	else
+		return true
+	end
+end
+
 -- creates a profile with optional template data used
 function M.create_profile(profile, template_data, extra_data)
 	if M.verbose == true then print("Profile: create_profile - " .. tostring(profile)) end

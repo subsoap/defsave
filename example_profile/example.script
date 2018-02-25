@@ -8,7 +8,9 @@ function init(self)
 	profile.template_data = require("example_profile.template_data")
 	profile.init()
 	profile.create_profile(nil, "casual_player", nil)
-	profile.create_profile("pkeod", nil, {score = 9999999})
+	if not profile.profile_exists("pkeod") then
+		profile.create_profile("pkeod", nil, {score = 9999999})
+	end
 	pprint(profile.get_profiles())
 	pprint(profile.profiles)
 end
