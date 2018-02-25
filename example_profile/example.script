@@ -6,14 +6,18 @@ function init(self)
 	profile.verbose = true
 	profile.enable_obfuscation = true
 	profile.template_data = require("example_profile.template_data")
-	profile.init()
-	profile.create_profile(nil, "casual_player", nil)
+	profile.init()	
 	if not profile.profile_exists("pkeod") then
 		profile.create_profile("pkeod", nil, {score = 9999999})
 	end
+	print(profile.is_profile_active("pkeod"))
 	if profile.is_profile_active("pkeod") == false then
 		profile.set_active_profile("pkeod")
 	end
+	print(profile.is_profile_active("pkeod"))
+	local player = profile.create_profile(nil, "casual_player", nil)
+	pprint(player)
+	profile.set_active_profile(player)
 	pprint(profile.get_profiles())
 	pprint(profile.profiles)
 end

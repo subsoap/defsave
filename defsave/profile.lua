@@ -79,6 +79,7 @@ function M.get_active_profile()
 			return k
 		end
 	end
+	return nil
 end
 
 local function set_active_profile_to_inactive()
@@ -92,6 +93,7 @@ end
 
 -- replaces active profile with marked id
 function M.set_active_profile(profile)
+	assert(M.profile_exists(profile), "Profile: set_active_profile - profile does not exist " .. tostring(profile))
 	if M.verbose == true then print("Profile: New active profile " .. tostring(profile)) end
 	set_active_profile_to_inactive()
 	M.profiles[profile].__active = true
