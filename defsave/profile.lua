@@ -72,7 +72,7 @@ function M.get_profiles()
 	return profiles
 end
 
--- gets the profile marked as active, returns false if no active profile is found
+-- gets the profile marked as active, returns nil if no active profile is found
 function M.get_active_profile()
 	for k,v in pairs(M.profiles) do
 		if v.__active == true then
