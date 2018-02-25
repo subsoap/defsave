@@ -1,5 +1,4 @@
 local defsave = require("defsave.defsave")
-local profile = require("defsave.profile")
 
 function init(self)
 	defsave.appname = "defsave_example"

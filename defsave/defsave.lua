@@ -26,6 +26,11 @@ M.obfuscation_key = "defsave" -- pick an obfuscation key it use if you're using 
 
 M.default_data = {} -- default data to set files to if any cannnot be loaded
 
+function M.set_appname(appname)
+	assert(type(appname) == "string", "DefSave: set_appname must pass a string")
+	M.appname = appname
+end
+
 function M.obfuscate(input, key)
 	key = key or M.obfuscation_key
 	local output = ""
@@ -249,6 +254,10 @@ function M.update(dt)
 			M.timer = M.timer - M.autosave_timer
 		end
 	end
+end
+
+function M.final()
+	M.save_all()
 end
 
 return M
