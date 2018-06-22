@@ -10,7 +10,7 @@ include_dirs = defsave
 game_binding = /example/main.input_bindingc
 
 [bootstrap]
-main_collection = /example_profile/profiles.collectionc
+main_collection = /example/main.collectionc
 
 [script]
 shared_state = 1

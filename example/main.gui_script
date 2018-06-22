@@ -10,6 +10,9 @@ function init(self)
 	defsave.load("player")
 	
 	print(defsave.get("player", "score"))
+
+	print(defsave.isset("player", "score"))
+	print(defsave.key_exists("player", "score"))
 	
 	print(defsave.is_loaded("config"))
 	print(defsave.is_loaded("configg"))
@@ -36,6 +39,8 @@ function init(self)
 	--defsave.save("config")
 	--defsave.save("config", true)
 	defsave.save_all(true)
+
+	pprint(defsave.get("player", "bank"))
 end
 
 function final(self)

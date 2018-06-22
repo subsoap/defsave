@@ -190,7 +190,11 @@ end
 
 function M.get(file, key)
 	if M.loaded[file] ~= nil then
-		return M.loaded[file].data[key]
+		if M.loaded[file].data[key] ~= nil then
+			return M.loaded[file].data[key]
+		else
+			return {}
+		end
 	else
 		print("DefSave: Warning when attempting to get a key '" .. key .. "' the file '" .. tostring(file) .. "' could not be found in loaded list")
 		return nil
@@ -203,10 +207,25 @@ function M.set(file, key, value)
 		M.loaded[file].data[key] = value
 		M.loaded[file].changed = true
 		M.changed = true
+		return true
 	else
 		print("DefSave: Warning when attempting to set a key '" .. key .. "' the file '" .. tostring(file) .. "' could not be found in loaded list")
-		return nil		
+		return nil
 	end
+end
+
+function M.key_exists(file, key)
+	if M.loaded[file] ~= nil then
+		if M.loaded[file].data[key] ~= nil then
+			return true
+		end
+	else
+		return false
+	end
+end
+
+function M.isset(file, key)
+	return M.key_exists(file, key)
 end
 
 function M.reset_to_default(file)
