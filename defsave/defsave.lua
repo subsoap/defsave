@@ -191,7 +191,8 @@ end
 function M.get(file, key)
 	if M.loaded[file] ~= nil then
 		if M.loaded[file].data[key] ~= nil then
-			return M.loaded[file].data[key]
+			local value = clone(M.loaded[file].data[key])
+			return value
 		else
 			return {}
 		end
@@ -204,6 +205,7 @@ end
 function M.set(file, key, value)
 	if M.loaded[file] ~= nil then
 		-- we could check here to see if values are the same or not to set the changed flags or not but would require deep table compare loop
+		value = clone(value) -- decouple from original table if value is a table
 		M.loaded[file].data[key] = value
 		M.loaded[file].changed = true
 		M.changed = true
