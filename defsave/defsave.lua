@@ -41,7 +41,7 @@ function M.obfuscate(input, key)
 	
 	for i=1, input_length do
 		local character = string.byte(input:sub(i,i))
-		if key_iterator >= key_length then key_iterator = 1 end -- cycle
+		if key_iterator >= key_length + 1 then key_iterator = 1 end -- cycle
 		local key_byte = string.byte(key:sub(key_iterator,key_iterator))
 		output = output .. string.char(bit.bxor( character , key_byte))
 
