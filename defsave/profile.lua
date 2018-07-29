@@ -39,6 +39,7 @@ local function obfuscate(input, key)
 end
 
 local function decompress(buffer)
+	if type(buffer) == "table" then return {} end
 	if buffer == nil then return {} end
 	buffer = zlib.inflate(buffer)
 	buffer = obfuscate(buffer, M.obfuscation_key)
