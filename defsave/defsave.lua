@@ -194,7 +194,8 @@ function M.get(file, key)
 			local value = clone(M.loaded[file].data[key])
 			return value
 		else
-			return {}
+			print("DefSave: Warning when attempting to get a key '" .. key .. "' of file '" .. tostring(file) .. "' the key was nil")
+			return nil
 		end
 	else
 		print("DefSave: Warning when attempting to get a key '" .. key .. "' the file '" .. tostring(file) .. "' could not be found in loaded list")
