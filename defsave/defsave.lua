@@ -54,27 +54,27 @@ end
 
 
 local function clone(t) -- deep-copy a table
-    if type(t) ~= "table" then return t end
-    local meta = getmetatable(t)
-    local target = {}
-    for k, v in pairs(t) do
-        if type(v) == "table" then
-            target[k] = clone(v)
-        else
-            target[k] = v
-        end
-    end
-    setmetatable(target, meta)
-    return target
+	if type(t) ~= "table" then return t end
+	local meta = getmetatable(t)
+	local target = {}
+	for k, v in pairs(t) do
+		if type(v) == "table" then
+			target[k] = clone(v)
+		else
+			target[k] = v
+		end
+	end
+	setmetatable(target, meta)
+	return target
 end
 
 local function copy(t) -- shallow-copy a table
-    if type(t) ~= "table" then return t end
-    local meta = getmetatable(t)
-    local target = {}
-    for k, v in pairs(t) do target[k] = v end
-    setmetatable(target, meta)
-    return target
+	if type(t) ~= "table" then return t end
+	local meta = getmetatable(t)
+	local target = {}
+	for k, v in pairs(t) do target[k] = v end
+	setmetatable(target, meta)
+	return target
 end
 
 
@@ -90,11 +90,11 @@ function M.get_file_path(file)
 		-- For Linux we must modify the default path to make Linux users happy
 		local appname = "config/" .. tostring(M.appname)
 		return sys.get_save_file(appname, file)
-  end
-  if html5 then
-    -- For HTML5 there's no need to get the full path
-    return M.appname .. "_" .. file
-  end
+	end
+	if html5 then
+		-- For HTML5 there's no need to get the full path
+		return M.appname .. "_" .. file
+	end
 	return sys.get_save_file(M.appname, file)
 end
 
@@ -119,18 +119,16 @@ function M.load(file)
 			print("DefSave: Warning attempt to reload already file has been blocked")
 			return true
 		end
-  end
+	end
 
-  local loaded_file
-  if html5 then
-    -- sys.load can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
-    -- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
-    loaded_file = json.decode(html5.run([[
-      window.localStorage.getItem(']] .. path .. [[') || '{}'
-    ]]))
-  else
-    loaded_file  = sys.load(path)
-  end
+	local loaded_file
+	if html5 then
+		-- sys.load can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
+		-- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
+		loaded_file = json.decode(html5.run([[(function(){try{return window.localStorage.getItem(']] .. path .. [[')||'{}'}catch(e){return'{}'}})()]]))
+	else
+		loaded_file  = sys.load(path)
+	end
 
 	local empty = false
 
@@ -180,21 +178,20 @@ function M.save(file, force)
 		return true
 	end
 
-  local path = M.get_file_path(file)
+	local path = M.get_file_path(file)
 
-  local is_save_successful;
-  if html5 then
-    -- sys.save can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
-    -- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
-    local encoded_data = json.encode(M.loaded[file].data):gsub("'", "\'") -- escape ' characters
-    html5.run([[
-      window.localStorage.setItem(']] .. path .. [[', ']] .. encoded_data .. [[')
-    ]])
-    is_save_successful = true
+	local is_save_successful;
+	if html5 then
+	-- sys.save can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
+	-- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
+	local encoded_data = json.encode(M.loaded[file].data):gsub("'", "\'") -- escape ' characters
+	html5.run([[try{window.localStorage.setItem(']] .. path .. [[', ']] .. encoded_data .. [[')}catch(e){}]])
 
-  else
-    is_save_successful = sys.save(path, M.loaded[file].data)
-  end
+	is_save_successful = true
+
+	else
+		is_save_successful = sys.save(path, M.loaded[file].data)
+	end
 
 	if is_save_successful then
 		if M.verbose then print("DefSave: File '" .. tostring(file) .. "' has been saved to the path '" .. path .. "'") end
