@@ -35,8 +35,6 @@ function M.generate_UUID_version_4()
 end
 
 set_random_seed()
-math.random();math.random();math.random();math.random(); -- clear bad RNG
-
 
 --print(M.generate_UUID_version_4())
 --UUID, _ = M.generate_UUID_version_4()
