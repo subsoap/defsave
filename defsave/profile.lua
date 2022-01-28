@@ -55,7 +55,7 @@ local function compress(buffer)
 end
 
 function M.set_defsave_filename(filename)
-	assert(type(appname) == "string", "Profile: set_defsave_filename must pass a string")
+	assert(type(filename) == "string", "Profile: set_defsave_filename must pass a string")
 	M.defsave_filename = filename
 end
 
