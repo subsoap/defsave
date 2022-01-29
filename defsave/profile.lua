@@ -55,7 +55,7 @@ local function compress(buffer)
 end
 
 function M.set_defsave_filename(filename)
-	assert(type(appname) == "string", "Profile: set_defsave_filename must pass a string")
+	assert(type(filename) == "string", "Profile: set_defsave_filename must pass a string")
 	M.defsave_filename = filename
 end
 
@@ -109,11 +109,11 @@ end
 
 -- create unique profile ID
 function M.create_unique_profile_id()
-	local uuid = uuid.generate_UUID_version_4()
-	while M.profiles[uuid] ~= nil do
-		uuid = uuid.generate_UUID_version_4()
+	local uuid_value = uuid.generate_UUID_version_4()
+	while M.profiles[uuid_value] ~= nil do
+		uuid_value = uuid.generate_UUID_version_4()
 	end
-	return "profile-" .. uuid
+	return "profile-" .. uuid_value
 end
 
 function M.profile_exists(profile)
