@@ -1,7 +1,6 @@
 -- DefSave helps with loading and saving config and player data between sesssions
 
 local utf8 = require("defsave.utf8")
-local json = require("defsave.json") -- used for HTML5
 
 local M = {}
 

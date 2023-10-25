@@ -3,7 +3,6 @@
 
 local defsave = require("defsave.defsave")
 local uuid = require("defsave.uuid")
-local json = require("defsave.json")
 
 local M = {}
 
