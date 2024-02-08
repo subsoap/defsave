@@ -1,0 +1,27 @@
+- name: defsave_ext
+  type: table
+  desc: Functions and constants for interacting with various hash and encode/decode algorithms
+
+  members:
+
+  - name: encode_base64
+    type: function
+
+    parameters:
+      - name: input
+        type: string
+
+    return:
+      - name: output
+        type: string
+
+  - name: decode_base64
+    type: function
+
+    parameters:
+      - name: input
+        type: string
+
+    return:
+      - name: output
+        type: string
