@@ -18,13 +18,35 @@ M.enable_encryption = false -- if true then all data saved and loaded will be en
 M.encryption_key = "defsave" -- pick an encryption key to use if you're using encryption
 M.enable_obfuscation= false -- if true then all data saved and loaded will be XOR obfuscated - FASTER
 M.obfuscation_key = "defsave" -- pick an obfuscation key it use if you're using encryption, the longer the key for obfuscation the better
-
+M.use_serialize = false
 -- You don't have to save your keys directly in one file as a single string... you can get creative with how you store your keys
 -- Don't expect your save files to not be unlocked by someone eventually, don't store sensetive data in your files!
 -- This is only a deterent for casual users to not mess with save data files
 -- And your users can still use memory editing tools which you must defend against with other ways if you even wish to
 
 M.default_data = {} -- default data to set files to if any cannnot be loaded
+
+
+local get_localStorage =  [[
+(function() {
+	try {
+		return window.localStorage.getItem('%s') || '{}';
+	} catch(e) {
+		return'{}';
+	}
+}) ()
+]]
+
+local set_localStorage =  [[
+(function() {
+	try {
+		window.localStorage.setItem('%s','%s');
+		return true;
+	} catch(e) {
+		return false;
+	}
+})()
+]]
 
 function M.set_appname(appname)
 	assert(type(appname) == "string", "DefSave: set_appname must pass a string")
@@ -51,7 +73,6 @@ function M.obfuscate(input, key)
 	return output
 end
 
-
 local function clone(t) -- deep-copy a table
 	if type(t) ~= "table" then return t end
 	local meta = getmetatable(t)
@@ -75,7 +96,6 @@ local function copy(t) -- shallow-copy a table
 	setmetatable(target, meta)
 	return target
 end
-
 
 function M.get_file_path(file)
 	if M.appname == "defsave" then
@@ -120,11 +140,19 @@ function M.load(file)
 		end
 	end
 
-	local loaded_file
+	local loaded_file = {}
 	if html5 then
 		-- sys.load can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
 		-- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
-		loaded_file = json.decode(html5.run([[(function(){try{return window.localStorage.getItem(']] .. path .. [[')||'{}'}catch(e){return'{}'}})()]]))
+		local web_data = html5.run(string.format(get_localStorage, path))
+
+		if web_data == "{}" then
+			loaded_file = {}
+		elseif M.use_serialize then
+			loaded_file = sys.deserialize( defsave_ext.decode_base64(web_data) )
+		else
+			loaded_file = json.decode(web_data)
+		end
 	else
 		loaded_file  = sys.load(path)
 	end
@@ -179,15 +207,19 @@ function M.save(file, force)
 
 	local path = M.get_file_path(file)
 
-	local is_save_successful;
+	local is_save_successful = false
 	if html5 then
-	-- sys.save can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
-	-- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
-	local encoded_data = json.encode(M.loaded[file].data):gsub("'", "\'") -- escape ' characters
-	html5.run([[try{window.localStorage.setItem(']] .. path .. [[', ']] .. encoded_data .. [[')}catch(e){}]])
+		-- sys.save can't be used for HTML5 apps running on iframe from a different origin (cross-origin iframe)
+		-- use `localStorage` instead because of this limitation on default IndexedDB storage used by Defold
+		local encoded_data = ""
 
-	is_save_successful = true
-
+		if M.use_serialize then
+			encoded_data = defsave_ext.encode_base64( sys.serialize(M.loaded[file].data) )
+		else
+			encoded_data = json.encode(M.loaded[file].data):gsub("'", "\'") -- escape ' characters
+		end
+		
+		is_save_successful = html5.run(string.format(set_localStorage, path, encoded_data))
 	else
 		is_save_successful = sys.save(path, M.loaded[file].data)
 	end
@@ -195,7 +227,7 @@ function M.save(file, force)
 	if is_save_successful then
 		if M.verbose then print("DefSave: File '" .. tostring(file) .. "' has been saved to the path '" .. path .. "'") end
 		M.loaded[file].changed = false
-		return true
+		return true	
 	else
 		print("DefSave: Something went wrong when attempting to save the file '" .. tostring(file) .. "' to the path '" .. path .. "'")
 		return nil

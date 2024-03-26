@@ -1,7 +1,7 @@
 [project]
 title = DefSave
-dependencies = https://github.com/britzl/gooey/archive/6.5.1.zip
 custom_resources = example_profile
+dependencies#0 = https://github.com/britzl/gooey/archive/6.5.1.zip
 
 [library]
 include_dirs = defsave
